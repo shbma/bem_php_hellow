@@ -18,7 +18,7 @@ var techs = {
         // bemhtml
         bemhtml: require('enb-bemxjst/techs/bemhtml'),
         bemjsonToHtml: require('enb-bemxjst/techs/bemjson-to-html'),
-        //bhPhp: require('enb-bh-php/techs/bh-php.js'),
+        bhPhp: require('enb-bh-php/techs/bh-php.js'),
     },
     enbBemTechs = require('enb-bem-techs'),
     levels = [
@@ -98,10 +98,10 @@ module.exports = function(config) {
             [techs.borschik, { source: '?.css', target: '?.min.css', minify: isProd }],
 
             //bhPhp
-            //[techs.bhPhp, { phpBootstrap: 'bh_engine/index.php'}],
+            [techs.bhPhp, { phpBootstrap: 'bh_engine/index.php'}],
         ]);
 
         nodeConfig.addTargets([/* '?.bemtree.js', */ '?.html', '?.min.css', '?.min.js']);
-        nodeConfig.addTech(require('enb-bh-php/techs/bh-php'));
+        //nodeConfig.addTech(require('enb-bh-php/techs/bh-php'));
     });
 };
