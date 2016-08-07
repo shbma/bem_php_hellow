@@ -12,20 +12,27 @@ var techs = {
         // js
         browserJs: require('enb-js/techs/browser-js'),
 
+        // php
+        bhPhp: require('enb-bh-php/techs/bh-php'),
+        bemjsonToHtmlPhp: require('enb-bh-php/techs/bemjson-to-html'),
+
         // bemtree
         // bemtree: require('enb-bemxjst/techs/bemtree'),
 
         // bemhtml
         bemhtml: require('enb-bemxjst/techs/bemhtml'),
-        bemjsonToHtml: require('enb-bemxjst/techs/bemjson-to-html'),
-        bhPhp: require('enb-bh-php/techs/bh-php.js'),
+        bemjsonToHtml: require('enb-bemxjst/techs/bemjson-to-html')
     },
     enbBemTechs = require('enb-bem-techs'),
     levels = [
         { path: 'libs/bem-core/common.blocks', check: false },
+        { path: 'libs/bem-core-php/common.blocks', check: false },
         { path: 'libs/bem-core/desktop.blocks', check: false },
+        { path: 'libs/bem-core-php/desktop.blocks', check: false },
         { path: 'libs/bem-components/common.blocks', check: false },
+        { path: 'libs/bem-components-php/common.blocks', check: false },
         { path: 'libs/bem-components/desktop.blocks', check: false },
+        { path: 'libs/bem-components-php/desktop.blocks', check: false },
         { path: 'libs/bem-components/design/common.blocks', check: false },
         { path: 'libs/bem-components/design/desktop.blocks', check: false },
         'common.blocks',
@@ -33,7 +40,7 @@ var techs = {
     ];
 
 module.exports = function(config) {
-    var isProd = process.env.YENV === 'production';
+    var isProd = process.env.YENV === 'development';
 
     config.nodes('*.bundles/*', function(nodeConfig) {
         nodeConfig.addTechs([
@@ -57,13 +64,19 @@ module.exports = function(config) {
             // [techs.bemtree, { sourceSuffixes: ['bemtree', 'bemtree.js'] }],
 
             // bemhtml
-            [techs.bemhtml, {
-                sourceSuffixes: ['bemhtml', 'bemhtml.js'],
-                forceBaseTemplates: true
+            [techs.bemhtml, { sourceSuffixes: ['bemhtml', 'bemhtml.js'] }],
+
+            // bh-php
+            [techs.bhPhp, {
+                phpBootstrap: "../../vendor/bem/bh/index.php",
+                devMode: process.env.BHPHP_ENV === 'development',
+                jsAttrName: "data-bem",
+                jsAttrScheme: "json"
             }],
 
             // html
             [techs.bemjsonToHtml],
+            [techs.bemjsonToHtmlPhp, { target: '?.bh-php.html' }],
 
             // client bemhtml
             [enbBemTechs.depsByTechToBemdecl, {
@@ -95,13 +108,12 @@ module.exports = function(config) {
 
             // borschik
             [techs.borschik, { source: '?.js', target: '?.min.js', minify: isProd }],
-            [techs.borschik, { source: '?.css', target: '?.min.css', minify: isProd }],
-
-            //bhPhp
-            [techs.bhPhp, { phpBootstrap: 'bh_engine/index.php'}],
+            [techs.borschik, { source: '?.css', target: '?.min.css', tech: 'cleancss', minify: isProd }]
         ]);
 
         nodeConfig.addTargets([/* '?.bemtree.js', */ '?.html', '?.min.css', '?.min.js']);
-        //nodeConfig.addTech(require('enb-bh-php/techs/bh-php'));
+
+        // bh-php
+        nodeConfig.addTargets(['?.bh.php', '?.bh-php.html']);
     });
 };

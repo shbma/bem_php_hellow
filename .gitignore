@@ -7,12 +7,13 @@ node_modules/
 .svn
 npm-debug.log
 
+vendor
+tmp/
+
 # bem
 .bem/cache/
 .enb/tmp/
-*bundles*/*/*.*
-!*bundles*/*/*.bemjson.js
+
 !*bundles*/.bem/*
 *pages*/*/*.*
-!*pages*/*/*.bemjson.js
 !*pages*/.bem/*
